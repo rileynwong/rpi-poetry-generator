@@ -1,6 +1,7 @@
 from os import listdir
 from os import getcwd
 import random, sys
+import string
 
 from textblob import TextBlob
 from word import Word
@@ -41,7 +42,8 @@ def get_next_line(d):
     if is_noun(last_word):
         current_line += "\n"
 
-    print current_line
+    f_line = string.center(current_line, 100)
+    print f_line
     return current_line
 
 
@@ -121,6 +123,32 @@ def get_sentiment_value():
 ### Helpers, Configuration, Random
 def rand_num_lines():
     return random.randint(1, 3)
+
+
+# return proportional range from -1 to 1
+def clamp_light(input):
+    output = (input - 15000)/15000
+
+    if output < -1:
+	output = -1
+
+    if output > 1:
+	output = 1
+
+    return output 
+
+
+# return proportional range from 1 to 5
+def clamp_distance(input):
+    output = (input / 25) + 1
+	
+    if output < 1:
+	output = 1
+
+    if output > 5:
+	output = 5
+
+    return output
 
 
 ### Main

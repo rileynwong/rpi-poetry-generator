@@ -18,15 +18,10 @@ def RCtime (RCpin):
  
         GPIO.setup(RCpin, GPIO.IN)
         # This takes about 1 millisecond per loop cycle
-        while (True):
-		if GPIO.input(RCpin) == GPIO.LOW:
-			print "low"
-		else:
-			print "high"
-		
-		if GPIO.input(RCpin) != GPIO.LOW:
-			print "high"
+        while GPIO.input(RCpin) == GPIO.LOW:
+		reading += 1
         return reading
  
 RCPin = 16
-print RCtime(RCPin)
+while True:
+	print RCtime(RCPin)
