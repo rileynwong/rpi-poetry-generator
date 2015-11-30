@@ -23,7 +23,7 @@ function generateLine(text) {
             },
             dataType: "text",
             complete: poll,
-            timeout: 2000
+            timeout: 200000000000
         })
     }, 500);
 })();

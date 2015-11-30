@@ -10,8 +10,6 @@ all_words_dict = {}
 def index():
     global all_words_dict
     all_words_dict = ling.parse_texts()
-    print "all words"
-    print all_words_dict
 
     return render_template('index.html')
 

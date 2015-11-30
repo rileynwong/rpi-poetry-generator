@@ -8,15 +8,24 @@ from word import Word
 #import pi
 
 last_word = ""
+NGRAM_SIZE = 5
 
 def main():
-    parse_texts()
-    lines = loop()
+    reload(sys)
+    sys.setdefaultencoding('ISO-8859-1')
+
+    print "Parsing texts..."
+    all_words_dict = parse_texts()
+
+    print "Generating lines..."
+    lines = loop(all_words_dict)
+
+    print lines
     return lines
 
-def loop():
+def loop(all_words_dict):
     lines = ''
-    for _ in range(10): # while True
+    for _ in xrange(10): # while True
         lines += get_next_line(all_words_dict)
         lines += '\n'
     return lines
@@ -40,6 +49,7 @@ def get_next_line(d):
 def parse_texts():
     texts_dir = getcwd() + "/texts"
     for dir_entry in listdir(texts_dir):
+	print "..."
         text = open(texts_dir + "/" + dir_entry)
         contents = text.read()
         contents.encode('utf-8').strip()
@@ -105,20 +115,12 @@ def get_closest_sentiment_phrase(d, sentiment_val, word):
     return phrase
 
 def get_sentiment_value():
-    return -1.0 # TODO - hook up rpi
+    return 1.0 # TODO - hook up rpi
 
 
 ### Helpers, Configuration, Random
 def rand_num_lines():
     return random.randint(1, 3)
-
-
-###
-reload(sys)
-sys.setdefaultencoding('ISO-8859-1')
-NGRAM_SIZE = 5
-
-all_words_dict = {} # dictionary maps word to Word
 
 
 ### Main
