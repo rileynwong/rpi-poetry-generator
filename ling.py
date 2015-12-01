@@ -11,7 +11,7 @@ import light
 
 
 last_word = ""
-NGRAM_SIZE = 5
+NGRAM_SIZE = 4
 all_words_dict = dict()
 
 
@@ -46,18 +46,12 @@ def loop(all_words_dict):
 
     for _ in xrange(4): # while True
         line = get_next_line(all_words_dict)
-        #lines += line
-        #lines += '\n'
 
         f_line = string.center(line, 100)
         print f_line
 
-    #print lines
-
 
 def get_next_line(d):
-    #global last_word
-    #if not last_word:
     last_word = ""
 
     sentiment_val = get_sentiment_value()
@@ -140,6 +134,7 @@ def get_closest_sentiment_phrase(d, sentiment_val, word):
     # each key is a sentiment value between -1.0 and 1.0
     keys = d[word].sentiment_ngrams_dict.keys()
     closest_key = min(keys, key=lambda x:abs(x-sentiment_val))
+
     phrase = d[word].sentiment_ngrams_dict[closest_key]
     return phrase
 
@@ -153,7 +148,6 @@ def rand_num_lines():
 def get_sentiment_value():
     # based on rpi light sensor
     val = light.get_light_intensity()
-    print "light: ", val
 
     val = clamp_light(val)
     return val
@@ -162,11 +156,10 @@ def get_sentiment_value():
 def get_num_lines():
     # based on rpi distance sensor
     dist = ultrasonic.get_distance()
-    print "dist: ", dist
 
     dist = clamp_distance(dist)
 
-    return dist
+    return dist - 1
 
 
 # return proportional range from -1 to 1
