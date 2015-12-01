@@ -10,7 +10,8 @@ print "Distance Measurement In Progress"
 GPIO.setup(TRIG,GPIO.OUT)
 GPIO.setup(ECHO,GPIO.IN)
 
-while True:
+# return distance in cm
+def get_distance():
 	GPIO.output(TRIG, False)
 	time.sleep(2)
 
@@ -27,10 +28,15 @@ while True:
 
 	pulse_duration = pulse_end - pulse_start
 
-	distance = pulse_duration * 17150
-
+	distance = pulse_duration * 17150 # convert to cm
 	distance = round(distance, 2)
 
-	print "Distance:",distance,"cm"
+	return distance
 
-GPIO.cleanup()
+
+### Main
+if __name__ == "__main__":
+	while True:
+		distance = get_distance()
+		print "Distance:",distance,"cm"
+
