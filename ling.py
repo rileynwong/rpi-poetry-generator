@@ -24,41 +24,33 @@ def setup():
     reload(sys)
     sys.setdefaultencoding('ISO-8859-1')
 
-    print "Parsing texts..."
-    global all_words_dict
-    all_words_dict = parse_texts()
+    print "\nParsing texts..."
+    parse_texts()
 
 
 def run():
-    print "Generating lines..."
-    global all_words_dict
-
-    lines = ''
+    print "\nGenerating lines..."
+    print ""
 
     while True:
-        loop(all_words_dict)
-
-    return lines
+        loop()
 
 
-def loop(all_words_dict):
+def loop():
     lines = ''
 
     for _ in xrange(4): # while True
-        line = get_next_line(all_words_dict)
+        line = get_next_line()
 
         f_line = string.center(line, 100)
         print f_line
 
 
-def get_next_line(d):
+def get_next_line():
     last_word = ""
 
     sentiment_val = get_sentiment_value()
-    current_line, last_word = generate_line(d, sentiment_val, last_word)
-
-    if is_noun(last_word):
-        current_line += "\n"
+    current_line, last_word = generate_line(sentiment_val, last_word)
 
     return current_line
 
@@ -72,21 +64,19 @@ def parse_texts():
         contents = text.read()
         contents.encode('utf-8').strip()
         contents = contents.lower()
-        all_words_dict = text_to_ngrams(contents)
+        text_to_ngrams(contents)
         text.close()
-    return all_words_dict
 
 
 def text_to_ngrams(text):
     blob = TextBlob(text)
     ngrams = blob.ngrams(NGRAM_SIZE)
-    all_words_dict = parse_ngrams(ngrams)
-    return all_words_dict
+    parse_ngrams(ngrams)
 
 
 def parse_ngrams(ngrams):
 
-    all_words_dict = {} # dictionary maps word to Word
+    global all_words_dict
 
     for ngram in ngrams:
         word = ngram[0]
@@ -100,33 +90,29 @@ def parse_ngrams(ngrams):
             # create new word and add to all_words_dict
             new_word = Word(word, {phrase_sentiment: phrase})
             all_words_dict[word] = new_word
-    return all_words_dict
-
-
-def is_noun(word):
-    return TextBlob(word).tags[0][1] == 'NN'
 
 
 ### Generating poetry
 # Returns the next line of poetry
-def generate_line(d, sentiment, start_word):
+def generate_line(sentiment, start_word):
     line, last_word = "", start_word
-    next_phrase = get_next_phrase(d, sentiment, start_word)
+    next_phrase = get_next_phrase(sentiment, start_word)
     for _ in range(get_num_lines()):
         line += " " + next_phrase
         last_word = next_phrase.split()[-1]
-        next_phrase = get_next_phrase(d, sentiment, last_word)
+        next_phrase = get_next_phrase(sentiment, last_word)
     return str(line), last_word
 
 
-def get_next_phrase(d, sentiment, word):
+def get_next_phrase(sentiment, word):
+    global all_words_dict
 
     # error checking - keep trying until we get a key with values
-    while word not in d:
+    while word not in all_words_dict:
         # get random word
-        word = random.choice(d.keys())
+        word = random.choice(all_words_dict.keys())
 
-    phrase = get_closest_sentiment_phrase(d, sentiment, word)
+    phrase = get_closest_sentiment_phrase(all_words_dict, sentiment, word)
     return phrase
 
 
@@ -159,13 +145,13 @@ def get_num_lines():
 
     dist = clamp_distance(dist)
 
-    return dist - 1
+    return dist
 
 
-# return proportional range from -1 to 1
+# clamp values from 0 to 7000 to 1 to -1
 def clamp_light(input):
-    input = 15000 - input # invert
-    output = (input - 15000)/15000
+    input = 7000.0 - input # invert
+    output = (input - 3500)/3500.0
 
     if output < -1:
         output = -1
@@ -176,7 +162,7 @@ def clamp_light(input):
     return output 
 
 
-# return proportional range from 1 to 5
+# clamp values from 0 to 7000 to 1 to 5
 def clamp_distance(input):
     output = (input / 25) + 1
 	
