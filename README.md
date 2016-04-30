@@ -18,7 +18,7 @@ Corpus credits: Gertrude Stein's Tender Buttons, selected poems by Mina Loy,
 Allen Ginsberg, Frank O'Hara, William Carlos Williams, and John Donne
 
 ### Setup:
-#### Raspberry Pi:
+### Raspberry Pi:
 - Hook up light sensor to pin 16
 - Hook up ultrasonic sensor to pins 23 (TRIG) and 24 (ECHO)
 
